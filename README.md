@@ -1,55 +1,74 @@
-# Book Inventory Management System
+<div align="center">
 
-A full-stack Book Inventory Management System built with the MERN stack.  
-This application allows users to manage books efficiently using CRUD operations with a clean, responsive, and interactive user interface.
+# 📚 Book Inventory Management System
 
----
-
-## Project Overview
-
-The Book Inventory Management System is a web application that enables users to manage a collection of books. Users can add, view, update, delete, and explore detailed information about books. All data is fetched dynamically from a backend API and stored securely in a database.
-
-The project follows real-world application architecture and fulfills all assignment requirements including API integration, responsive UI, data validation, and structured routing.
+🚀 A modern **full-stack MERN application** to manage books efficiently with a clean UI, secure backend, and real-time API-driven data.
 
 ---
 
-## Features
+![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![Node](https://img.shields.io/badge/Node.js-20-green?logo=node.js)
+![Express](https://img.shields.io/badge/Express.js-Backend-black?logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-green?logo=mongodb)
+![Tailwind](https://img.shields.io/badge/TailwindCSS-UI-blue?logo=tailwindcss)
+![JWT](https://img.shields.io/badge/JWT-Auth-orange?logo=jsonwebtokens)
 
-- User authentication (Login & Register)
-- Protected routes using JWT authentication
-- Add new books with image upload
-- View all books in a tabular format
-- View detailed book information on a separate page
-- Edit existing book details
-- Delete books from inventory
-- Image upload and preview support
-- Responsive and scrollable UI
-- Proper form validation
-- API-driven dynamic data rendering
+</div>
 
 ---
 
-## Tech Stack
+## 📌 Project Overview
 
-### Frontend
-- React.js
-- React Router DOM
-- Axios
-- Tailwind CSS
-- Lucide Icons
+The **Book Inventory Management System** is a full-stack web application designed to manage a collection of books using **CRUD operations**.  
+The application fetches data dynamically from a backend API and displays it in a responsive and user-friendly interface.
 
-### Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- Multer (Image Upload)
-- JSON Web Token (JWT)
-- dotenv
+This project follows **real-world development practices** and fully meets the assignment requirements, including API integration, validation, routing, and UI responsiveness.
 
 ---
 
-## API Endpoints
+## ✨ Key Features
+
+✔ Secure user authentication (Login & Register)  
+✔ JWT-protected routes  
+✔ Add books with image upload  
+✔ Display books in a structured table  
+✔ Dedicated book details page  
+✔ Update existing book information  
+✔ Delete books from inventory  
+✔ Image preview & storage support  
+✔ Fully responsive & scrollable UI  
+✔ Form validation & error handling  
+✔ API-driven dynamic data rendering  
+
+---
+
+## 🧰 Tech Stack
+
+### 🎨 Frontend
+| Technology | Purpose |
+|---------|--------|
+| ⚛️ React.js | UI development |
+| 🧭 React Router | Page navigation |
+| 🔗 Axios | API communication |
+| 🎨 Tailwind CSS | Styling |
+| 🧩 Lucide Icons | UI icons |
+
+---
+
+### ⚙️ Backend
+| Technology | Purpose |
+|---------|--------|
+| 🟢 Node.js | Runtime environment |
+| 🚂 Express.js | Server framework |
+| 🍃 MongoDB | Database |
+| 📦 Mongoose | ODM |
+| 🖼 Multer | Image upload |
+| 🔐 JWT | Authentication |
+| 🌱 dotenv | Environment variables |
+
+---
+
+## 🔗 API Endpoints
 
 | Method | Endpoint | Description |
 |------|---------|------------|
@@ -60,9 +79,9 @@ The project follows real-world application architecture and fulfills all assignm
 
 ---
 
-## Environment Variables
+## 🛠 Environment Variables
 
-### Backend `.env`
+### Backend (`.env`)
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
@@ -70,14 +89,16 @@ JWT_SECRET=your_secret_key
 ### Frontend `.env`
 VITE_API_URL=http://localhost:5000/api
 
---
 
 ## Installation & Setup
 
 ### Backend Setup
+```
 cd backend
 npm install
 npm run dev
+
+```
 
 
 ### Frontend Setup
@@ -88,13 +109,20 @@ npm run dev
 
 ```
 
-## Author
+## 👩‍💻 Author
 
 **Saloni Tomar**  
-Full Stack Developer  
+💼 Full Stack Developer
+📍 MERN Stack | REST APIs | UI/UX 
 
 ---
 
 ## License
 
 This project is created for educational and assignment purposes.
+
+<div align="center">
+
+✨ Built with passion for clean code and scalable design ✨
+
+</div> ```
