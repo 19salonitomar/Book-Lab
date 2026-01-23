@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../../api/api"; // Axios instance with backend baseURL
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -35,27 +35,39 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    // 🔹 Simulated API call (replace with real backend later)
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
+    try {
+      const res = await API.post("/auth/login", { email, password });
 
-      // Redirect after login
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
-    }, 1200);
+     
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      setSuccess(true);
+      setLoading(false);
+
+      setTimeout(() => navigate("/"), 1500); // Redirect after success
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 px-4">
       <div className="w-full max-w-md">
-
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            <svg
+              className="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
               />
             </svg>
@@ -68,18 +80,18 @@ export default function Login() {
 
         {/* Card */}
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-xl p-8 border">
-
           {/* Alerts */}
           {(error || success) && (
             <div className="space-y-3 mb-6 animate-slide-down">
               {error && <Alert type="error" message={error} />}
-              {success && <Alert type="success" message="Login successful! Redirecting..." />}
+              {success && (
+                <Alert type="success" message="Login successful! Redirecting..." />
+              )}
             </div>
           )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-
             <InputField
               label="Email Address"
               type="email"
@@ -91,10 +103,11 @@ export default function Login() {
 
             <div>
               <div className="flex justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <label className="text-sm font-medium text-gray-700">Password</label>
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-blue-600 hover:underline"
+                >
                   Forgot password?
                 </Link>
               </div>
@@ -117,7 +130,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Divider */}
           <Divider />
 
           {/* Social Buttons */}

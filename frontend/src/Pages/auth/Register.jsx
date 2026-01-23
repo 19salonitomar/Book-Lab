@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../../api/api"; // Axios instance with backend baseURL
 
 export default function Register() {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export default function Register() {
     return "";
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationError = validateForm();
@@ -64,21 +65,29 @@ export default function Register() {
     setError("");
     setLoading(true);
 
-    // 🔹 Simulated API call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
+    try {
+      const res = await API.post("/auth/register", {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        age: formData.age,
+        password: formData.password,
+      });
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
-    }, 1200);
+      setSuccess(true);
+      setLoading(false);
+
+      // Redirect to login after success
+      setTimeout(() => navigate("/login"), 1500);
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 px-4">
       <div className="w-full max-w-md">
-
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-lg flex items-center justify-center mb-4">
@@ -92,24 +101,58 @@ export default function Register() {
 
         {/* Card */}
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-xl p-8 border">
-
           {/* Alerts */}
           {(error || success) && (
             <div className="space-y-3 mb-6 animate-slide-down">
               {error && <Alert type="error" message={error} />}
-              {success && <Alert type="success" message="Registration successful! Redirecting..." />}
+              {success && (
+                <Alert type="success" message="Registration successful! Redirecting..." />
+              )}
             </div>
           )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-
-            <Input label="Full Name" name="name" value={formData.name} onChange={handleChange} />
-            <Input label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} />
-            <Input label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} />
-            <Input label="Age" name="age" type="number" value={formData.age} onChange={handleChange} />
-            <Input label="Password" name="password" type="password" value={formData.password} onChange={handleChange} />
-            <Input label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} />
+            <Input
+              label="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            <Input
+              label="Email Address"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <Input
+              label="Phone Number"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+            <Input
+              label="Age"
+              name="age"
+              type="number"
+              value={formData.age}
+              onChange={handleChange}
+            />
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <Input
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+            />
 
             <button
               type="submit"

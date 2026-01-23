@@ -1,61 +1,84 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Plus, Eye, Edit, Trash } from "lucide-react";
+import API from "../api/api";
+import { Plus, Eye, Edit, Trash, X } from "lucide-react";
+
+// Import modals
+import BookAdd from "../components/book/BookAdd";
+import BookEdit from "../components/book/BookEdit";
 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBook, setSelectedBook] = useState(null); // For preview modal
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editBook, setEditBook] = useState(null);
 
-  // Simulated API call (replace with real backend later)
-  useEffect(() => {
-    setTimeout(() => {
-      setBooks([
-        {
-          id: 1,
-          title: "Atomic Habits",
-          author: "James Clear",
-          publisher: "Penguin",
-          publishedDate: "2018",
-        },
-        {
-          id: 2,
-          title: "The Alchemist",
-          author: "Paulo Coelho",
-          publisher: "HarperOne",
-          publishedDate: "1988",
-        },
-        {
-          id: 3,
-          title: "Deep Work",
-          author: "Cal Newport",
-          publisher: "Grand Central",
-          publishedDate: "2016",
-        },
-      ]);
+  // Fetch all books from backend
+  const fetchBooks = async () => {
+    try {
+      const res = await API.get("/books");
+      setBooks(res.data);
       setLoading(false);
-    }, 1000);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
   }, []);
 
+  // Delete book
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure to delete this book?")) return;
+    try {
+      await API.delete(`/books/${id}`);
+      setBooks(books.filter((b) => b._id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload(); // redirect to login
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">📚 Book Lab</h1>
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+          📚 Book Lab
+        </h1>
 
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
-          <Plus size={18} />
-          Add Book
-        </button>
+        <div className="flex gap-3">
+          <button
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-xl hover:shadow-lg transition"
+            onClick={() => setShowAddModal(true)}
+          >
+            <Plus size={18} />
+            Add Book
+          </button>
+          <button
+            className="px-4 py-2 bg-red-600 text-white rounded-xl hover:shadow-lg transition"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* Table Container */}
-      <div className="overflow-x-auto rounded-lg shadow-md">
+      {/* Table */}
+      <div className="overflow-x-auto rounded-xl shadow-md bg-white p-4">
         {loading ? (
           <div className="text-center py-10 text-lg">Loading books...</div>
         ) : (
-          <table className="min-w-full bg-white dark:bg-gray-800">
-            <thead className="bg-gray-200 dark:bg-gray-700">
-              <tr>
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gray-200">
                 <th className="px-4 py-3 text-left">Title</th>
                 <th className="px-4 py-3 text-left">Author</th>
                 <th className="px-4 py-3 text-left">Publisher</th>
@@ -63,37 +86,38 @@ const Home = () => {
                 <th className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
-
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-gray-200">
               {books.map((book) => (
-                <tr
-                  key={book.id}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                >
+                <tr key={book._id} className="hover:bg-gray-100 transition">
                   <td className="px-4 py-3">{book.title}</td>
                   <td className="px-4 py-3">{book.author}</td>
                   <td className="px-4 py-3">{book.publisher}</td>
                   <td className="px-4 py-3">{book.publishedDate}</td>
 
                   <td className="px-4 py-3 flex justify-center gap-3">
-                    <Link
-                      to={`/books/${book.id}`}
-                      className="text-blue-600 hover:text-blue-800"
+                    {/* Preview */}
+                    <button
                       title="View"
+                      className="text-blue-600 hover:text-blue-800"
+                      onClick={() => setSelectedBook(book)}
                     >
                       <Eye size={18} />
-                    </Link>
+                    </button>
 
+                    {/* Edit */}
                     <button
-                      className="text-green-600 hover:text-green-800"
                       title="Edit"
+                      className="text-green-600 hover:text-green-800"
+                      onClick={() => setEditBook(book)}
                     >
                       <Edit size={18} />
                     </button>
 
+                    {/* Delete */}
                     <button
-                      className="text-red-600 hover:text-red-800"
+                      onClick={() => handleDelete(book._id)}
                       title="Delete"
+                      className="text-red-600 hover:text-red-800"
                     >
                       <Trash size={18} />
                     </button>
@@ -105,10 +129,60 @@ const Home = () => {
         )}
       </div>
 
-      {/* Scroll hint */}
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-        Scroll horizontally on small screens →
-      </p>
+      {/* Preview Modal */}
+      {selectedBook && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-96 relative">
+            <button
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+              onClick={() => setSelectedBook(null)}
+            >
+              <X size={20} />
+            </button>
+            
+            <div className="w-full flex justify-center mb-4">
+              <div className="w-48 h-48 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                <img
+                  src={
+                    selectedBook.image
+                      ? `http://localhost:5000${selectedBook.image}`
+                      : "https://via.placeholder.com/150"
+                  }
+                  alt={selectedBook.title}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+
+
+            <h2 className="text-xl font-bold mb-2">{selectedBook.title}</h2>
+            <p><strong>Author:</strong> {selectedBook.author}</p>
+            <p><strong>Publisher:</strong> {selectedBook.publisher}</p>
+            <p><strong>Year:</strong> {selectedBook.publishedDate}</p>
+            <p><strong>Pages:</strong> {selectedBook.pages || "-"}</p>
+            <p className="mt-2 text-gray-600">{selectedBook.description || "No description available."}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Add Book Modal */}
+      {showAddModal && (
+        <BookAdd
+          onClose={() => setShowAddModal(false)}
+          onAdd={(newBook) => setBooks([newBook, ...books])}
+        />
+      )}
+
+      {/* Edit Book Modal */}
+      {editBook && (
+        <BookEdit
+          book={editBook}
+          onClose={() => setEditBook(null)}
+          onUpdate={(updatedBook) =>
+            setBooks(books.map((b) => (b._id === updatedBook._id ? updatedBook : b)))
+          }
+        />
+      )}
     </div>
   );
 };
