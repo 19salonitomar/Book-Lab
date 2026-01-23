@@ -125,4 +125,4 @@ This project is created for educational and assignment purposes.
 
 ✨ Built with passion for clean code and scalable design ✨
 
-</div> ```
+</div> 
