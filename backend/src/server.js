@@ -3,6 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import bookRoutes from "./routes/bookRoutes.js";
+import path from "path";
+
 
 dotenv.config();
 connectDB();
@@ -13,6 +16,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/books", bookRoutes);
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.get("/", (req, res) => {
   res.send("BookLab API Running");
