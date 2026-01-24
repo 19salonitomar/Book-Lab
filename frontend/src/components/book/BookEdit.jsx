@@ -2,8 +2,6 @@ import { useState } from "react";
 import API from "../../api/api";
 import { X, ImageIcon } from "lucide-react";
 
-const BACKEND_URL = "http://localhost:5000";
-
 export default function BookEdit({ book, onClose, onUpdate }) {
   const [formData, setFormData] = useState({
     title: book.title || "",
@@ -24,14 +22,17 @@ export default function BookEdit({ book, onClose, onUpdate }) {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
     setImage(file);
-    if (file) setPreview(URL.createObjectURL(file));
+    setPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { title, author, publisher, publishedDate, description, pages } = formData;
+    const { title, author, publisher, publishedDate, description, pages } =
+      formData;
+
     if (!title || !author || !publisher || !publishedDate || !description || !pages) {
       setError("All fields are required.");
       return;
@@ -87,7 +88,7 @@ export default function BookEdit({ book, onClose, onUpdate }) {
                   preview
                     ? preview
                     : book.image
-                    ? `${BACKEND_URL}${book.image}`
+                    ? book.image
                     : "https://via.placeholder.com/200"
                 }
                 alt="Book"
@@ -114,11 +115,28 @@ export default function BookEdit({ book, onClose, onUpdate }) {
             <Input label="Publisher" name="publisher" value={formData.publisher} onChange={handleChange} />
 
             <div className="grid grid-cols-2 gap-3">
-              <Input label="Published Year" name="publishedDate" type="number" value={formData.publishedDate} onChange={handleChange} />
-              <Input label="Pages" name="pages" type="number" value={formData.pages} onChange={handleChange} />
+              <Input
+                label="Published Year"
+                name="publishedDate"
+                type="number"
+                value={formData.publishedDate}
+                onChange={handleChange}
+              />
+              <Input
+                label="Pages"
+                name="pages"
+                type="number"
+                value={formData.pages}
+                onChange={handleChange}
+              />
             </div>
 
-            <Textarea label="Description" name="description" value={formData.description} onChange={handleChange} />
+            <Textarea
+              label="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+            />
 
             <button
               type="submit"
